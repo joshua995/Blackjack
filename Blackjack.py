@@ -1,3 +1,9 @@
+"""
+Joshua Liu
+2022
+Blackjack
+"""
+
 from random import shuffle
 
 HIT_INPUT, STAND_INPUT, SPLIT_INPUT = "1", "2", "3"
