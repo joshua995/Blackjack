@@ -25,6 +25,10 @@ public class Hand {
         this.money = money;
     }
 
+    public String type() {
+        return this.type;
+    }
+
     public int score() {
         return this.score;
     }
@@ -41,9 +45,11 @@ public class Hand {
         System.out.println("\n");
     }
 
-    public void addCard(String card) {
+    public boolean addCard(String card) {
         this.cards.add(card);
         this.calculateScore();
+
+        return this.score >= 21 ? true : false;
     }
 
     // For dealer (CPU)
@@ -60,7 +66,8 @@ public class Hand {
     }
 
     public boolean canSplit() {
-        if (this.cards.size() > 2) {
+        if (this.cards.size() > 2 || this.cards.size() == 1) { // Prevent splitting after a hit or immediately after a
+                                                               // split
             return false;
         }
 
@@ -81,7 +88,7 @@ public class Hand {
         String card = this.cards.get(1);
         this.cards.remove(1);
         this.calculateScore();
-        return new Hand("Player " + (playerI + 1), new String[] { card }, money);
+        return new Hand("Player's Split " + (playerI + 1), new String[] { card }, money);
     }
 
     private void calculateScore() {

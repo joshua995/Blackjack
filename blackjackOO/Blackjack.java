@@ -29,11 +29,23 @@ public class Blackjack {
 
         resetGame();
 
-        boolean breakOut = false;
-        while (true) {
+        boolean blackjack = player.score() == 21 || dealer.score() == 21 ? true : false;
+
+        boolean breakOut = blackjack;
+        while (!breakOut) {
             String input = scanner.nextLine();
             if (input.contains("1")) {// Hit
-                singlePlayerHands.get(playerI).addCard(deck[cardI++]);
+                if (singlePlayerHands.get(playerI).addCard(deck[cardI++])) {
+                    if (singlePlayerHands.get(playerI).score() <= 21) {
+                        playerI++;
+                        if (breakOut = (playerI == singlePlayerHands.size())) {
+                            dealer.dealerAddCards(deck, cardI, new Hand[] { player });
+                        }
+                    } else {
+                        playerI++;
+                        breakOut = (playerI == singlePlayerHands.size());
+                    }
+                }
             } else if (input.contains("2")) {// Stand
                 playerI++;
                 if (breakOut = (playerI == singlePlayerHands.size())) {
@@ -51,6 +63,25 @@ public class Blackjack {
             System.out.println(instructions);
             if (breakOut) {
                 break;
+            }
+        }
+        if (dealer.score() == 21) {
+            if (blackjack) {
+                System.out.print("Blackjack ");
+            }
+            System.out.println("Dealer Won");
+        } else {
+            if (blackjack) {
+                System.out.print("Blackjack Payer Won");
+            } else {
+                for (Hand hand : singlePlayerHands) {
+                    if (hand.score() == 21 || (hand.score() > dealer.score() && hand.score() <= 21)
+                            || dealer.score() > 21) {
+                        System.out.println(hand.type() + " Won");
+                    } else {
+                        System.out.println("Dealer Won Against " + hand.type());
+                    }
+                }
             }
         }
     }
