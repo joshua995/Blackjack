@@ -2133,10 +2133,10 @@ public class Blackjack {
 				return "Congratulations you won!";
 			} else if (cpuPositions.containsAll(l)) {
 				play = false;
-				return "You lost to a bot!";
+				return "You lost!";
 			} else if (cpuPositions.size() + playerPositions.size() == 8) {
 				play = false;
-				return "Bruh";
+				return "No loss, no gain";
 			}
 		}
 		return "";

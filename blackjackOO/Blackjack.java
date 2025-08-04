@@ -6,6 +6,8 @@
 
 package blackjackOO;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -15,33 +17,41 @@ public class Blackjack {
     static String[] deck = new String[52];
     static Scanner scanner = new Scanner(System.in);
     static int cardI = 0; // Current card index
+    static String instructions = "'1' to HIT | '2' to STAND | '3' to SPLIT";
+
+    static Hand player;
+    static Hand dealer;
+    static List<Hand> singlePlayerHands = new ArrayList<>();
+    static int playerI = 0;
 
     public static void main(String[] args) {
+        createDeck();// TODO change to user input to set how many decks to use
 
-        createDeck();
-        shuffleDeck();
+        resetGame();
 
-        // for (String s : deck) {
-        // System.out.println(s);
-        // }
-
-        String firstPlayerCard = deck[cardI++];
-        String firstDealerCard = deck[cardI++];
-        String secondPlayerCard = deck[cardI++];
-        String secondDealerCard = deck[cardI++];
-
-        Hand player = new Hand("Player", new String[] { firstPlayerCard, secondPlayerCard }, 1000);
-        Hand dealer = new Hand("Dealer", new String[] { firstDealerCard, secondDealerCard }, Integer.MAX_VALUE);
-
-        dealer.displayCards();
-        player.displayCards();
-
+        boolean breakOut = false;
         while (true) {
-            if (scanner.nextLine().contains("1")) {
-                player.addCard(deck[cardI++]);
+            String input = scanner.nextLine();
+            if (input.contains("1")) {// Hit
+                singlePlayerHands.get(playerI).addCard(deck[cardI++]);
+            } else if (input.contains("2")) {// Stand
+                playerI++;
+                if (breakOut = (playerI == singlePlayerHands.size())) {
+                    dealer.dealerAddCards(deck, cardI, new Hand[] { player });
+                }
+            } else if (input.contains("3") && singlePlayerHands.get(playerI).canSplit()) {// Split
+                singlePlayerHands.add(singlePlayerHands.get(playerI).splitHand(playerI));
             }
+
             dealer.displayCards();
-            player.displayCards();
+            for (int i = 0; i <= playerI; i++) {
+                if (i < singlePlayerHands.size())
+                    singlePlayerHands.get(i).displayCards();
+            }
+            System.out.println(instructions);
+            if (breakOut) {
+                break;
+            }
         }
     }
 
@@ -80,5 +90,26 @@ public class Blackjack {
             deck[i] = deck[swapI];
             deck[swapI] = temp;
         }
+    }
+
+    static void resetGame() {
+        cardI = 0;
+        playerI = 0;
+        singlePlayerHands.clear();
+
+        shuffleDeck();
+
+        String firstPlayerCard = deck[cardI++];
+        String firstDealerCard = deck[cardI++];
+        String secondPlayerCard = deck[cardI++];
+        String secondDealerCard = deck[cardI++];
+
+        player = new Hand("Player", new String[] { firstPlayerCard, secondPlayerCard }, 1000);
+        dealer = new Hand("Dealer", new String[] { firstDealerCard, secondDealerCard }, Integer.MAX_VALUE);
+        singlePlayerHands.add(player);
+
+        dealer.displayCards();
+        player.displayCards();
+        System.out.println(instructions);
     }
 }
