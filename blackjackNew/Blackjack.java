@@ -4,7 +4,7 @@
  * Blackjack remake object oriented structure
  */
 
-package blackjackOO;
+package blackjackNew;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,9 @@ public class Blackjack {
     static String[] suits = { "Spades", "Hearts", "Clubs", "Diamonds" };
     static String[] values = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
     static String[] deck = new String[52];
+
     static Scanner scanner = new Scanner(System.in);
+
     static int cardI = 0; // Current card index
     static String instructions = "'1' to HIT | '2' to STAND | '3' to SPLIT";
 
@@ -27,7 +29,7 @@ public class Blackjack {
     static boolean gameOver = false;
 
     public static void main(String[] args) {
-        createDeck();// TODO change to user input to set how many decks to use
+        createDeck(2);// TODO change to user input to set how many decks to use
 
         while (!gameOver) {
             resetGame();

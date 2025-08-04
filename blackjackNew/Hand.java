@@ -5,7 +5,7 @@
  * Allows for multiplayer later
  */
 
-package blackjackOO;
+package blackjackNew;
 
 import java.util.ArrayList;
 import java.util.List;
