@@ -38,6 +38,14 @@ public class Hand {
         return this.money;
     }
 
+    public void addMoney(double winnings) {
+        this.money += winnings;
+    }
+
+    public void subtractMoney(double bet) {
+        this.money -= bet;
+    }
+
     public void displayCards() {
         if (this.type != "Dealer" || !this.hideCard) {
             System.out.println(this.type + "'s Hand: " + this.score);

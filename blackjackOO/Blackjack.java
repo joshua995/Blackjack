@@ -24,17 +24,41 @@ public class Blackjack {
     static List<Hand> singlePlayerHands = new ArrayList<>();
     static int playerI = 0; // Current player's hand index
 
+    static boolean gameOver = false;
+
     public static void main(String[] args) {
         createDeck();// TODO change to user input to set how many decks to use
 
-        while (true) {
+        while (!gameOver) {
             resetGame();
+
+            double bet = 0.0;
+            while (bet == 0) {
+                System.out.printf("Your money: $%.2f -- Enter your bet: ", player.money());
+                String inputBet = scanner.nextLine();
+                try {
+                    bet = Double.parseDouble(inputBet);
+                    if (bet > player.money()) {
+                        System.out.println("Insufficient funds, try again.");
+                        bet = 0;
+                    }
+                } catch (Exception e) {
+                    System.out.println("Invalid bet, try again.");
+                    bet = 0;
+                }
+            }
+            player.subtractMoney(bet);
+
+            dealer.displayCards();
+            player.displayCards();
+            System.out.println(instructions);
 
             boolean blackjack = player.score() == 21 || dealer.score() == 21 ? true : false;
 
             boolean breakOut = blackjack;
             while (!breakOut) {
                 String input = scanner.nextLine();
+
                 if (input.contains("1")) {// Hit
                     if (singlePlayerHands.get(playerI).addCard(deck[cardI++])) {// If hand hits 21 or more
                         playerI++;
@@ -45,7 +69,7 @@ public class Blackjack {
                     }
                 } else if (input.contains("2")) {// Stand
                     playerI++;
-                    if (breakOut = (playerI == singlePlayerHands.size())) {
+                    if (breakOut = (playerI == singlePlayerHands.size())) {// Check if player has unplayed splits
                         dealer.dealerAddCards(deck, cardI,
                                 singlePlayerHands.toArray(new Hand[singlePlayerHands.size()]));
                     }
@@ -64,9 +88,13 @@ public class Blackjack {
                 System.out.println(instructions);
             }
             // Scoring
-            checkWinner(blackjack);
+            checkWinner(blackjack, bet);
             System.out.println("-".repeat(100));
+            if (player.money() <= 0) {
+                gameOver = true;
+            }
         }
+        scanner.close();
     }
 
     // Default is one deck
@@ -106,7 +134,7 @@ public class Blackjack {
         }
     }
 
-    static void checkWinner(boolean blackjack) {
+    static void checkWinner(boolean blackjack, double bet) {
         if (dealer.score() == 21) {
             if (blackjack) {
                 System.out.print("Blackjack ");
@@ -115,11 +143,13 @@ public class Blackjack {
         } else {
             if (blackjack) {
                 System.out.println("Blackjack Payer Won");
+                player.addMoney(bet * 2.5);
             } else {
                 for (Hand hand : singlePlayerHands) {
                     if (hand.score() == 21 || (hand.score() > dealer.score() && hand.score() <= 21)
                             || (dealer.score() > 21 && hand.score() <= 21)) {
                         System.out.println(hand.type() + " Won");
+                        player.addMoney(bet * 2);
                     } else {
                         System.out.println("Dealer Won Against " + hand.type());
                     }
@@ -144,9 +174,5 @@ public class Blackjack {
                 player == null ? 1000 : player.money());
         dealer = new Hand("Dealer", new String[] { firstDealerCard, secondDealerCard }, Integer.MAX_VALUE);
         singlePlayerHands.add(player);
-
-        dealer.displayCards();
-        player.displayCards();
-        System.out.println(instructions);
     }
 }
