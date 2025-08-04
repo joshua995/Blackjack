@@ -15,6 +15,7 @@ public class Hand {
     private int score = 0;
     private double money = 0.0;
     private List<String> cards = new ArrayList<>();
+    private boolean hideCard = true;
 
     public Hand(String type, String[] initialCards, double money) {
         this.type = type;
@@ -59,7 +60,7 @@ public class Hand {
         // Ensure that the dealer adds cards until its value is greater or equal to any
         // player
         for (Hand player : players) {
-            while (player.score() > this.score && this.score < 21) {
+            while (player.score() > this.score && player.score() <= 21) {
                 this.addCard(deck[cardI++]);
             }
         }
