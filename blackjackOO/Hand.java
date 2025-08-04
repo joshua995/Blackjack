@@ -39,9 +39,15 @@ public class Hand {
     }
 
     public void displayCards() {
-        System.out.println(type + "'s Hand: " + this.score);
-        for (String s : this.cards) {
-            System.out.print(s + "  ");
+        if (this.type != "Dealer" || !this.hideCard) {
+            System.out.println(this.type + "'s Hand: " + this.score);
+            for (String s : this.cards) {
+                System.out.print(s + "  ");
+            }
+        } else {
+            int value = getValue(this.cards.get(0).split("-")[0]);
+            System.out.println(this.type + "'s Hand: " + value);
+            System.out.print(this.cards.get(0));
         }
         System.out.println("\n");
     }
@@ -55,6 +61,7 @@ public class Hand {
 
     // For dealer (CPU)
     public void dealerAddCards(String[] deck, int cardI, Hand[] players) {
+        this.hideCard = false;
         this.calculateScore();
 
         // Ensure that the dealer adds cards until its value is greater or equal to any
@@ -72,15 +79,8 @@ public class Hand {
             return false;
         }
 
-        String valueS = this.cards.get(0).split("-")[0];
-        int value = valueS.contains("A") ? 1
-                : (valueS.contains("J") || valueS.contains("Q") || valueS.contains("K")) ? 10
-                        : Integer.parseInt(valueS);
-
-        valueS = this.cards.get(1).split("-")[0];
-        int value1 = valueS.contains("A") ? 1
-                : (valueS.contains("J") || valueS.contains("Q") || valueS.contains("K")) ? 10
-                        : Integer.parseInt(valueS);
+        int value = getValue(this.cards.get(0).split("-")[0]);
+        int value1 = getValue(this.cards.get(1).split("-")[0]);
 
         return value == value1 ? true : false;
     }
@@ -90,6 +90,14 @@ public class Hand {
         this.cards.remove(1);
         this.calculateScore();
         return new Hand("Player's Split " + (playerI + 1), new String[] { card }, money);
+    }
+
+    private int getValue(String card) {
+        String valueS = card;
+        return valueS.contains("A") ? 1
+                : (valueS.contains("J") || valueS.contains("Q") || valueS.contains("K")) ? 10
+                        : Integer.parseInt(valueS);
+
     }
 
     private void calculateScore() {

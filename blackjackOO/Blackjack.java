@@ -22,7 +22,7 @@ public class Blackjack {
     static Hand player = null;
     static Hand dealer = null;
     static List<Hand> singlePlayerHands = new ArrayList<>();
-    static int playerI = 0;
+    static int playerI = 0; // Current player's hand index
 
     public static void main(String[] args) {
         createDeck();// TODO change to user input to set how many decks to use
@@ -36,16 +36,18 @@ public class Blackjack {
             while (!breakOut) {
                 String input = scanner.nextLine();
                 if (input.contains("1")) {// Hit
-                    if (singlePlayerHands.get(playerI).addCard(deck[cardI++])) {
+                    if (singlePlayerHands.get(playerI).addCard(deck[cardI++])) {// If hand hits 21 or more
                         playerI++;
-                        if (breakOut = (playerI == singlePlayerHands.size())) {
-                            dealer.dealerAddCards(deck, cardI, new Hand[] { player });
+                        if (breakOut = (playerI == singlePlayerHands.size())) {// Check if player has unplayed splits
+                            dealer.dealerAddCards(deck, cardI,
+                                    singlePlayerHands.toArray(new Hand[singlePlayerHands.size()]));
                         }
                     }
                 } else if (input.contains("2")) {// Stand
                     playerI++;
                     if (breakOut = (playerI == singlePlayerHands.size())) {
-                        dealer.dealerAddCards(deck, cardI, new Hand[] { player });
+                        dealer.dealerAddCards(deck, cardI,
+                                singlePlayerHands.toArray(new Hand[singlePlayerHands.size()]));
                     }
                 } else if (input.contains("3") && singlePlayerHands.get(playerI).canSplit()) {// Split
                     singlePlayerHands.add(singlePlayerHands.get(playerI).splitHand(singlePlayerHands.size() - 1));
