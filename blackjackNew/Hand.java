@@ -105,7 +105,6 @@ public class Hand {
         return valueS.contains("A") ? 1
                 : (valueS.contains("J") || valueS.contains("Q") || valueS.contains("K")) ? 10
                         : Integer.parseInt(valueS);
-
     }
 
     private void calculateScore() {

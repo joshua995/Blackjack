@@ -29,7 +29,7 @@ public class Blackjack {
     static boolean gameOver = false;
 
     public static void main(String[] args) {
-        createDeck(2);// TODO change to user input to set how many decks to use
+        createDeck();// TODO change to user input to set how many decks to use
 
         while (!gameOver) {
             resetGame();
@@ -63,18 +63,10 @@ public class Blackjack {
 
                 if (input.contains("1")) {// Hit
                     if (singlePlayerHands.get(playerI).addCard(deck[cardI++])) {// If hand hits 21 or more
-                        playerI++;
-                        if (breakOut = (playerI == singlePlayerHands.size())) {// Check if player has unplayed splits
-                            dealer.dealerAddCards(deck, cardI,
-                                    singlePlayerHands.toArray(new Hand[singlePlayerHands.size()]));
-                        }
+                        breakOut = standLogic(breakOut);
                     }
                 } else if (input.contains("2")) {// Stand
-                    playerI++;
-                    if (breakOut = (playerI == singlePlayerHands.size())) {// Check if player has unplayed splits
-                        dealer.dealerAddCards(deck, cardI,
-                                singlePlayerHands.toArray(new Hand[singlePlayerHands.size()]));
-                    }
+                    breakOut = standLogic(breakOut);
                 } else if (input.contains("3") && singlePlayerHands.get(playerI).canSplit()) {// Split
                     singlePlayerHands.add(singlePlayerHands.get(playerI).splitHand(singlePlayerHands.size() - 1));
                 }
@@ -84,6 +76,7 @@ public class Blackjack {
                     if (i < singlePlayerHands.size())
                         singlePlayerHands.get(i).displayCards();
                 }
+                
                 if (breakOut) {
                     break;
                 }
@@ -97,6 +90,15 @@ public class Blackjack {
             }
         }
         scanner.close();
+    }
+
+    static boolean standLogic(boolean breakOut) {
+        playerI++;
+        if (breakOut = (playerI == singlePlayerHands.size())) {// Check if player has unplayed splits
+            dealer.dealerAddCards(deck, cardI,
+                    singlePlayerHands.toArray(new Hand[singlePlayerHands.size()]));
+        }
+        return breakOut;
     }
 
     // Default is one deck
