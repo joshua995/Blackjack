@@ -45,6 +45,10 @@ public class Hand {
         this.money -= bet;
     }
 
+    public List<String> cards() {
+        return this.cards;
+    }
+
     public void displayCards() {
         if (this.type != "Dealer" || !this.hideCard) {
             System.out.println(this.type + "'s Hand: " + this.score);

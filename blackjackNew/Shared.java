@@ -3,6 +3,7 @@ package blackjackNew;
 public class Shared {
     private boolean breakOut = false;
     private String move = "";
+    private String bet = "";
 
     public Shared() {
 
@@ -22,6 +23,21 @@ public class Shared {
 
     public synchronized void move(String string) {
         this.move = string;
+    }
+
+    public synchronized String bet() {
+        return this.bet;
+    }
+
+    public synchronized void bet(String string) {
+        System.out.println(string);
+        this.bet = string;
+    }
+
+    public void reset() {
+        this.breakOut = false;
+        this.move = "";
+        this.bet = "";
     }
 
 }

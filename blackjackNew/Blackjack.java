@@ -33,7 +33,7 @@ public class Blackjack {
     static GUI gui = new GUI(shared);
 
     public static void main(String[] args) {
-        createDeck();// TODO change to user input to set how many decks to use
+        createDeck();// Can be set to use multiple decks
 
         while (!gameOver) {
             resetGame();
@@ -41,7 +41,10 @@ public class Blackjack {
             double bet = 0.0;
             while (bet == 0) {
                 System.out.printf("Your money: $%.2f -- Enter your bet: ", player.money());
-                String inputBet = scanner.nextLine();
+                while (shared.bet() == "")
+                    ;
+                String inputBet = shared.bet();
+                shared.bet("");
                 try {
                     bet = Double.parseDouble(inputBet);
                     if (bet > player.money()) {
@@ -90,7 +93,7 @@ public class Blackjack {
                 }
                 System.out.println(instructions);
             }
-            gui.frame.dispose(); // TODO temporary
+            // gui.frame.dispose(); // TODO temporary
             // Scoring
             checkWinner(blackjack, bet);
             System.out.println("-".repeat(100));
@@ -172,6 +175,7 @@ public class Blackjack {
     }
 
     static void resetGame() {
+        shared.reset();
         cardI = 0;
         playerI = 0;
         singlePlayerHands.clear();
