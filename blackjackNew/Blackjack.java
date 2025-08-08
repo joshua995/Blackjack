@@ -6,6 +6,7 @@
 
 package blackjackNew;
 
+import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -28,7 +29,9 @@ public class Blackjack {
 
     static boolean gameOver = false;
 
-    static Shared shared = new Shared();
+    static List<Image> cardImg = new ArrayList<>();
+
+    static Shared shared = new Shared(cardImg);
 
     static GUI gui = new GUI(shared);
 
@@ -37,6 +40,7 @@ public class Blackjack {
 
         while (!gameOver) {
             resetGame();
+            gui.moneyDisplay().setText(String.format("Money $%.2f", player.money()));
 
             double bet = 0.0;
             while (bet == 0) {
@@ -57,9 +61,12 @@ public class Blackjack {
                 }
             }
             player.subtractMoney(bet);
+            gui.moneyDisplay().setText(String.format("Money $%.2f", player.money()));
 
             dealer.displayCards();
             player.displayCards();
+            gui.dealerScoreDisplay().setText("Dealer's Score: " + dealer.score());
+            gui.playerScoreDisplay().setText("Player's Score: " + player.score());
             System.out.println(instructions);
 
             boolean blackjack = player.score() == 21 || dealer.score() == 21 ? true : false;
@@ -88,12 +95,17 @@ public class Blackjack {
                         singlePlayerHands.get(i).displayCards();
                 }
 
+                gui.dealerScoreDisplay().setText("Dealer's Score: " + dealer.score());
+                for (int i = 0; i <= playerI; i++) {
+                    if (i < singlePlayerHands.size())
+                        gui.playerScoreDisplay().setText("Player's Score: " + singlePlayerHands.get(i).score());
+                }
+
                 if (shared.breakOut()) {
                     break;
                 }
                 System.out.println(instructions);
             }
-            // gui.frame.dispose(); // TODO temporary
             // Scoring
             checkWinner(blackjack, bet);
             System.out.println("-".repeat(100));
@@ -152,26 +164,37 @@ public class Blackjack {
 
     static void checkWinner(boolean blackjack, double bet) {
         if (dealer.score() == 21) {
+            String result = "";
             if (blackjack) {
-                System.out.print("Blackjack ");
+                result += "Blackjack ";
+                // System.out.print("Blackjack ");
             }
-            System.out.println("Dealer Won");
+            result += "Dealer Won";
+            // System.out.println("Dealer Won");
+            gui.resultDisplay().setText(result);
         } else {
             if (blackjack) {
-                System.out.println("Blackjack Payer Won");
+                // System.out.println("Blackjack Payer Won");
+                gui.resultDisplay().setText("Blackjack Payer Won");
                 player.addMoney(bet * 2.5);
             } else {
+                String result = "<html>";
                 for (Hand hand : singlePlayerHands) {
                     if (hand.score() == 21 || (hand.score() > dealer.score() && hand.score() <= 21)
                             || (dealer.score() > 21 && hand.score() <= 21)) {
-                        System.out.println(hand.type() + " Won");
+                        // System.out.println(hand.type() + " Won");
+                        result += hand.type() + " Won<br>";
                         player.addMoney(bet * 2);
                     } else {
-                        System.out.println("Dealer Won Against " + hand.type());
+                        // System.out.println("Dealer Won Against " + hand.type());
+                        gui.resultDisplay().setText("Dealer Won Against " + hand.type());
+                        result += "Dealer Won Against " + hand.type() + "<br>";
                     }
                 }
+                gui.resultDisplay().setText(result + "</html>");
             }
         }
+        gui.moneyDisplay().setText(String.format("Money $%.2f", player.money()));
     }
 
     static void resetGame() {

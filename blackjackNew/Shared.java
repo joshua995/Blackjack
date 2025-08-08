@@ -1,12 +1,17 @@
 package blackjackNew;
 
+import java.awt.Image;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Shared {
     private boolean breakOut = false;
     private String move = "";
     private String bet = "";
+    private List<Image> cardImg = new ArrayList<>();
 
-    public Shared() {
-
+    public Shared(List<Image> cardImg) {
+        this.cardImg = cardImg;
     }
 
     public synchronized boolean breakOut() {
@@ -30,8 +35,11 @@ public class Shared {
     }
 
     public synchronized void bet(String string) {
-        System.out.println(string);
         this.bet = string;
+    }
+
+    public synchronized List<Image> cardImg() {
+        return this.cardImg;
     }
 
     public void reset() {

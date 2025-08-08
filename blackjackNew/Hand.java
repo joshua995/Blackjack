@@ -30,7 +30,11 @@ public class Hand {
     }
 
     public int score() {
-        return this.score;
+        if (this.type != "Dealer" || !this.hideCard) {
+            return this.score;
+        } else {
+            return getValue(this.cards.get(0).split("-")[0]);
+        }
     }
 
     public double money() {

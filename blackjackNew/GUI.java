@@ -2,16 +2,20 @@ package blackjackNew;
 
 public class GUI {
 
-    public Frame frame = new Frame(0, 0, 500, 500);
+    public Frame frame;
 
-    private Label playerHandDisplay = new Label(300, 0, 200, 20, "");
-    private Label dealerHandDisplay = new Label(300, 30, 200, 20, "");
+    private Label playerScoreDisplay = new Label(100, 520, 200, 50, "", "");
+    private Label dealerScoreDisplay = new Label(100, 280, 200, 50, "", "");
+    private Label moneyDisplay = new Label(0, 520, 300, 50, "$", "");
+    private Label resultDisplay = new Label(200, 600, 400, 50, "", "result");
 
     public GUI(Shared shared) {
-        TextField betField = new TextField(0, 90, 200, 20, "Enter your bet", shared);
-        Button hitButton = new Button(0, 0, 100, 20, "HIT", shared);
-        Button standButton = new Button(0, 30, 100, 20, "STAND", shared);
-        Button splitButton = new Button(0, 60, 100, 20, "SPLIT", shared);
+        frame = new Frame(0, 0, 800, 800, shared);
+        TextField betField = new TextField(0, 440, 300, 50, "Enter your bet", shared);
+
+        Button hitButton = new Button(0, 200, 100, 50, "HIT", shared);
+        Button standButton = new Button(0, 280, 100, 50, "STAND", shared);
+        Button splitButton = new Button(0, 360, 100, 50, "SPLIT", shared);
 
         frame.add(betField);
 
@@ -19,18 +23,28 @@ public class GUI {
         frame.add(standButton);
         frame.add(splitButton);
 
-        frame.add(playerHandDisplay);
-        frame.add(dealerHandDisplay);
+        frame.add(playerScoreDisplay);
+        frame.add(dealerScoreDisplay);
+        frame.add(moneyDisplay);
+        frame.add(resultDisplay);
 
         frame.repaint();
         frame.revalidate();
     }
 
-    public Label playerHandDisplay() {
-        return this.playerHandDisplay;
+    public Label playerScoreDisplay() {
+        return this.playerScoreDisplay;
     }
 
-    public Label dealerHandDisplay() {
-        return this.dealerHandDisplay;
+    public Label dealerScoreDisplay() {
+        return this.dealerScoreDisplay;
+    }
+
+    public Label moneyDisplay() {
+        return this.moneyDisplay;
+    }
+
+    public Label resultDisplay() {
+        return this.resultDisplay;
     }
 }
