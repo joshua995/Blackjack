@@ -19,7 +19,6 @@ public class Hand {
 
     public Hand(String type, String[] initialCards, double money) {
         this.type = type;
-
         for (String iC : initialCards) {
             addCard(iC);
         }
@@ -101,10 +100,9 @@ public class Hand {
     }
 
     private int getValue(String card) {
-        String valueS = card;
-        return valueS.contains("A") ? 1
-                : (valueS.contains("J") || valueS.contains("Q") || valueS.contains("K")) ? 10
-                        : Integer.parseInt(valueS);
+        return card.contains("A") ? 1
+                : (card.contains("J") || card.contains("Q") || card.contains("K")) ? 10
+                        : Integer.parseInt(card);
     }
 
     private void calculateScore() {

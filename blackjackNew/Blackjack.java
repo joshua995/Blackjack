@@ -28,6 +28,10 @@ public class Blackjack {
 
     static boolean gameOver = false;
 
+    static Shared shared = new Shared();
+
+    static GUI gui = new GUI(shared);
+
     public static void main(String[] args) {
         createDeck();// TODO change to user input to set how many decks to use
 
@@ -57,17 +61,21 @@ public class Blackjack {
 
             boolean blackjack = player.score() == 21 || dealer.score() == 21 ? true : false;
 
-            boolean breakOut = blackjack;
-            while (!breakOut) {
-                String input = scanner.nextLine();
-
-                if (input.contains("1")) {// Hit
+            shared.breakOut(blackjack);
+            while (!shared.breakOut()) {
+                while (shared.move() == "")
+                    ;
+                String input = shared.move();
+                if (input.contains("hit")) {// Hit
+                    shared.move("");
                     if (singlePlayerHands.get(playerI).addCard(deck[cardI++])) {// If hand hits 21 or more
-                        breakOut = standLogic(breakOut);
+                        shared.breakOut(standLogic(shared.breakOut()));
                     }
-                } else if (input.contains("2")) {// Stand
-                    breakOut = standLogic(breakOut);
-                } else if (input.contains("3") && singlePlayerHands.get(playerI).canSplit()) {// Split
+                } else if (input.contains("stand")) {// Stand
+                    shared.move("");
+                    shared.breakOut(standLogic(shared.breakOut()));
+                } else if (input.contains("split") && singlePlayerHands.get(playerI).canSplit()) {// Split
+                    shared.move("");
                     singlePlayerHands.add(singlePlayerHands.get(playerI).splitHand(singlePlayerHands.size() - 1));
                 }
 
@@ -76,12 +84,13 @@ public class Blackjack {
                     if (i < singlePlayerHands.size())
                         singlePlayerHands.get(i).displayCards();
                 }
-                
-                if (breakOut) {
+
+                if (shared.breakOut()) {
                     break;
                 }
                 System.out.println(instructions);
             }
+            gui.frame.dispose(); // TODO temporary
             // Scoring
             checkWinner(blackjack, bet);
             System.out.println("-".repeat(100));
