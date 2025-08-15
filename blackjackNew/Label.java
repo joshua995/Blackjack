@@ -6,12 +6,10 @@ import javax.swing.JLabel;
 
 public class Label extends JLabel {
 
-    private int height;
     private String type;
 
     public Label(int x, int y, int width, int height, String text, String type) {
         this.type = type;
-        this.height = height;
         this.setSize(width, height);
         if (text == "$") {
             x = 400 + ((400 - width) / 2);

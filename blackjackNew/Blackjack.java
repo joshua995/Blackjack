@@ -10,14 +10,11 @@ import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
 
 public class Blackjack {
     static String[] suits = { "Spades", "Hearts", "Clubs", "Diamonds" };
     static String[] values = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
     static String[] deck = new String[52];
-
-    static Scanner scanner = new Scanner(System.in);
 
     static int cardI = 0; // Current card index
     static String instructions = "'1' to HIT | '2' to STAND | '3' to SPLIT";
@@ -60,18 +57,22 @@ public class Blackjack {
                     bet = 0;
                 }
             }
+
             player.subtractMoney(bet);
             gui.moneyDisplay().setText(String.format("Money $%.2f", player.money()));
 
             resetGame();
-
             dealer.displayCards(gui);
             player.displayCards(gui);
             gui.dealerScoreDisplay().setText("Dealer's Score: " + dealer.score());
             gui.playerScoreDisplay().setText("Player's Score: " + player.score());
             System.out.println(instructions);
 
-            boolean blackjack = player.score() == 21 || dealer.score() == 21 ? true : false;
+            boolean blackjack = player.score() == 21 || dealer.score(true) == 21 ? true : false;
+            if (blackjack) {
+                checkWinner(blackjack, bet);
+                continue;
+            }
 
             shared.breakOut(blackjack);
             while (!shared.breakOut()) {
@@ -81,6 +82,7 @@ public class Blackjack {
                 if (input.contains("hit")) {// Hit
                     shared.move("");
                     if (singlePlayerHands.get(playerI).addCard(deck[cardI++])) {// If hand hits 21 or more
+                        gui.reset();
                         shared.breakOut(standLogic(shared.breakOut()));
                     }
                 } else if (input.contains("stand")) {// Stand
@@ -88,17 +90,16 @@ public class Blackjack {
                     shared.breakOut(standLogic(shared.breakOut()));
                 } else if (input.contains("split") && singlePlayerHands.get(playerI).canSplit()) {// Split
                     shared.move("");
-                    gui.playerCards()[gui.playerI()]
-                            .setText(gui.playerCards()[gui.playerI()].getText() + " | ");
                     singlePlayerHands.add(singlePlayerHands.get(playerI).splitHand(singlePlayerHands.size() - 1));
                 }
 
                 gui.reset();
                 dealer.displayCards(gui);
-                for (int i = 0; i <= playerI; i++) {
-                    if (i < singlePlayerHands.size())
-                        singlePlayerHands.get(i).displayCards(gui);
-                }
+                // for (int i = 0; i <= playerI; i++) {
+                // if (i < singlePlayerHands.size())
+                // singlePlayerHands.get(i).displayCards(gui);
+                // }
+                singlePlayerHands.get(playerI).displayCards(gui);
 
                 gui.dealerScoreDisplay().setText("Dealer's Score: " + dealer.score());
                 for (int i = 0; i <= playerI; i++) {
@@ -113,19 +114,18 @@ public class Blackjack {
             }
             // Scoring
             checkWinner(blackjack, bet);
-            System.out.println("-".repeat(100));
             if (player.money() <= 0) {
                 gameOver = true;
             }
         }
-        scanner.close();
     }
 
     static boolean standLogic(boolean breakOut) {
-        playerI++;
-        if (breakOut = (playerI == singlePlayerHands.size())) {// Check if player has unplayed splits
+        if (breakOut = (playerI == singlePlayerHands.size() - 1)) {// Check if player has unplayed splits
             dealer.dealerAddCards(deck, cardI,
                     singlePlayerHands.toArray(new Hand[singlePlayerHands.size()]));
+        } else {
+            playerI++;
         }
         return breakOut;
     }
@@ -172,7 +172,7 @@ public class Blackjack {
             String result = "";
             if (blackjack) {
                 result += "Blackjack ";
-                // System.out.print("Blackjack ");
+                System.out.print("Blackjack ");
             }
             result += "Dealer Won";
             // System.out.println("Dealer Won");
@@ -200,6 +200,7 @@ public class Blackjack {
             }
         }
         gui.moneyDisplay().setText(String.format("Money $%.2f", player.money()));
+        gui.frame.revalidate();
     }
 
     static void resetGame() {

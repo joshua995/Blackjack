@@ -37,6 +37,10 @@ public class Hand {
         }
     }
 
+    public int score(boolean all) {
+        return this.score;
+    }
+
     public double money() {
         return this.money;
     }
@@ -55,9 +59,9 @@ public class Hand {
 
     public void displayCards(GUI gui) {
         if (this.type != "Dealer" || !this.hideCard) {
-            System.out.println(this.type + "'s Hand: " + this.score);
+            // System.out.println(this.type + "'s Hand: " + this.score);
             for (String s : this.cards) {
-                System.out.print(s + "  ");
+                // System.out.print(s + " ");
                 if (this.type.contains("Player")) {
                     gui.addCardToPlayer(s.split("-")[0] + "-" + s.split("-")[1].charAt(0));
                 } else {
@@ -66,10 +70,11 @@ public class Hand {
             }
         } else {
             int value = getValue(this.cards.get(0).split("-")[0]);
-            System.out.println(this.type + "'s Hand: " + value);
-            System.out.print(this.cards.get(0));
+            // System.out.println(this.type + "'s Hand: " + value);
+            // System.out.print(this.cards.get(0));
+            gui.addCardToDealer(this.cards.get(0).split("-")[0] + "-" + this.cards.get(0).split("-")[1].charAt(0));
         }
-        System.out.println("\n");
+        // System.out.println("\n");
     }
 
     public boolean addCard(String card) {
