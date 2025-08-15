@@ -38,8 +38,8 @@ public class Blackjack {
     public static void main(String[] args) {
         createDeck();// Can be set to use multiple decks
 
+        resetGame();
         while (!gameOver) {
-            resetGame();
             gui.moneyDisplay().setText(String.format("Money $%.2f", player.money()));
 
             double bet = 0.0;
@@ -63,8 +63,10 @@ public class Blackjack {
             player.subtractMoney(bet);
             gui.moneyDisplay().setText(String.format("Money $%.2f", player.money()));
 
-            dealer.displayCards();
-            player.displayCards();
+            resetGame();
+
+            dealer.displayCards(gui);
+            player.displayCards(gui);
             gui.dealerScoreDisplay().setText("Dealer's Score: " + dealer.score());
             gui.playerScoreDisplay().setText("Player's Score: " + player.score());
             System.out.println(instructions);
@@ -86,13 +88,16 @@ public class Blackjack {
                     shared.breakOut(standLogic(shared.breakOut()));
                 } else if (input.contains("split") && singlePlayerHands.get(playerI).canSplit()) {// Split
                     shared.move("");
+                    gui.playerCards()[gui.playerI()]
+                            .setText(gui.playerCards()[gui.playerI()].getText() + " | ");
                     singlePlayerHands.add(singlePlayerHands.get(playerI).splitHand(singlePlayerHands.size() - 1));
                 }
 
-                dealer.displayCards();
+                gui.reset();
+                dealer.displayCards(gui);
                 for (int i = 0; i <= playerI; i++) {
                     if (i < singlePlayerHands.size())
-                        singlePlayerHands.get(i).displayCards();
+                        singlePlayerHands.get(i).displayCards(gui);
                 }
 
                 gui.dealerScoreDisplay().setText("Dealer's Score: " + dealer.score());
@@ -199,6 +204,7 @@ public class Blackjack {
 
     static void resetGame() {
         shared.reset();
+        gui.reset();
         cardI = 0;
         playerI = 0;
         singlePlayerHands.clear();

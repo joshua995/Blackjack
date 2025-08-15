@@ -53,11 +53,16 @@ public class Hand {
         return this.cards;
     }
 
-    public void displayCards() {
+    public void displayCards(GUI gui) {
         if (this.type != "Dealer" || !this.hideCard) {
             System.out.println(this.type + "'s Hand: " + this.score);
             for (String s : this.cards) {
                 System.out.print(s + "  ");
+                if (this.type.contains("Player")) {
+                    gui.addCardToPlayer(s.split("-")[0] + "-" + s.split("-")[1].charAt(0));
+                } else {
+                    gui.addCardToDealer(s.split("-")[0] + "-" + s.split("-")[1].charAt(0));
+                }
             }
         } else {
             int value = getValue(this.cards.get(0).split("-")[0]);

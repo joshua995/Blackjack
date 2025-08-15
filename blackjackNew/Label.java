@@ -26,6 +26,8 @@ public class Label extends JLabel {
         super.setText(text);
         if (this.type == "result") {
             this.setSize(this.getHeight() * (text.length() - 1), 50 * countRepeats("Won", text));
+        } else if (this.type == "card") {
+            this.setSize(this.getHeight() * (text.length() - 1), this.getHeight());
         } else {
             this.setSize(this.getHeight() * (text.length() - 1), this.getHeight());
         }
