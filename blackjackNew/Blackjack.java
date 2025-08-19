@@ -82,7 +82,6 @@ public class Blackjack {
                 if (input.contains("hit")) {// Hit
                     shared.move("");
                     if (singlePlayerHands.get(playerI).addCard(deck[cardI++])) {// If hand hits 21 or more
-                        gui.reset();
                         shared.breakOut(standLogic(shared.breakOut()));
                     }
                 } else if (input.contains("stand")) {// Stand
@@ -168,36 +167,25 @@ public class Blackjack {
     }
 
     static void checkWinner(boolean blackjack, double bet) {
-        if (dealer.score() == 21) {
-            String result = "";
-            if (blackjack) {
-                result += "Blackjack ";
-                System.out.print("Blackjack ");
-            }
-            result += "Dealer Won";
-            // System.out.println("Dealer Won");
-            gui.resultDisplay().setText(result);
-        } else {
-            if (blackjack) {
-                // System.out.println("Blackjack Payer Won");
-                gui.resultDisplay().setText("Blackjack Payer Won");
-                player.addMoney(bet * 2.5);
+        if (blackjack) {
+            if (dealer.score(true) == 21) {
+                gui.resultDisplay().setText("Blackjack Dealer Won");
             } else {
-                String result = "<html>";
-                for (Hand hand : singlePlayerHands) {
-                    if (hand.score() == 21 || (hand.score() > dealer.score() && hand.score() <= 21)
-                            || (dealer.score() > 21 && hand.score() <= 21)) {
-                        // System.out.println(hand.type() + " Won");
-                        result += hand.type() + " Won<br>";
-                        player.addMoney(bet * 2);
-                    } else {
-                        // System.out.println("Dealer Won Against " + hand.type());
-                        gui.resultDisplay().setText("Dealer Won Against " + hand.type());
-                        result += "Dealer Won Against " + hand.type() + "<br>";
-                    }
-                }
-                gui.resultDisplay().setText(result + "</html>");
+                gui.resultDisplay().setText("Blackjack Player Won");
+                player.addMoney(bet * 2.5);
             }
+        } else {
+            String result = "<html>";
+            for (Hand hand : singlePlayerHands) {
+                if ((dealer.score(true) <= 21 && dealer.score(true) >= hand.score()) || hand.score() > 21) {
+                    result += "Dealer Won Against " + hand.type() + "<br>";
+                } else {
+                    result += hand.type() + " Won<br>";
+                    player.addMoney(bet * 2);
+                }
+            }
+            result += "</html>";
+            gui.resultDisplay().setText(result);
         }
         gui.moneyDisplay().setText(String.format("Money $%.2f", player.money()));
         gui.frame.revalidate();
@@ -205,7 +193,6 @@ public class Blackjack {
 
     static void resetGame() {
         shared.reset();
-        gui.reset();
         cardI = 0;
         playerI = 0;
         singlePlayerHands.clear();
